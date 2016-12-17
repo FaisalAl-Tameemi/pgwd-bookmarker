@@ -25,7 +25,7 @@ switch(task){
 		console.log('\n');
 		break;
 	case 'new':
-		const new_bookmark = bookmarker.create(commands.title, commands.url, commands.tags);
+		const new_bookmark = bookmarker.create(commands.title, commands.url);
 		console.log('\nSuccessfully create new bookmark. \n');
 		console.log(new_bookmark);
 		console.log('\n');
