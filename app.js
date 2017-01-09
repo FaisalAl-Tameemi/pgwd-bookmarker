@@ -5,8 +5,7 @@ const prettyjson = require('prettyjson');
 const parseArgs = require('minimist');
 
 // require the bookmarksUtil and create a bookmarker
-const createBookmarker = require('./util/bookmarker');
-const bookmarker = createBookmarker();
+const bookmarker = require('./util/bookmarker');
 
 // parse the command line arguments
 const commands = parseArgs(process.argv);
@@ -21,11 +20,11 @@ if(!task){
 switch(task){
 	case 'list':
 		console.log('\nHere is a list of all the current bookmarks:\n');
-		console.log(bookmarker.findAll());
+		console.log(bookmarker.all());
 		console.log('\n');
 		break;
 	case 'new':
-		const new_bookmark = bookmarker.create(commands.title, commands.url, commands.tags);
+		const new_bookmark = bookmarker.create(commands.title, commands.url);
 		console.log('\nSuccessfully create new bookmark. \n');
 		console.log(new_bookmark);
 		console.log('\n');
