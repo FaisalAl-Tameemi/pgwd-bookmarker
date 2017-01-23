@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const bookmarker = require('../util/bookmarker');
+const bookmarker = require('../util/bookmarker.solution');
 
 describe('Bookmarker', function() {
 
@@ -88,7 +88,7 @@ describe('Bookmarker', function() {
       // wait for DB to be updated
       setTimeout(function(){
         // then check that item can no longer be found
-        asset.equal(0, bookmarker.count());
+        assert.equal(0, bookmarker.count());
       }, 0);
     });
   });
