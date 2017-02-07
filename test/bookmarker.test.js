@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const bookmarker = require('../util/bookmarker.solution');
+const bookmarker = require('../db');
 
 describe('Bookmarker', function() {
 
@@ -10,16 +10,16 @@ describe('Bookmarker', function() {
     });
   });
 
-  describe('#deleteAll()', function() {
+  describe('#removeAll()', function() {
     it('should remove all the bookmarks available in the DB', function(){
-      bookmarker.deleteAll();
+      bookmarker.removeAll();
       assert.equal(0, bookmarker.all().length);
     });
   });
 
   describe('#count()', function() {
     it('should return the number of total available bookmarks in the DB', function(){
-      bookmarker.deleteAll();
+      bookmarker.removeAll();
       assert.equal(0, bookmarker.all().length);
     });
   });
@@ -31,60 +31,37 @@ describe('Bookmarker', function() {
         assert.equal(new_bookmark.name, 'testing');
         assert.equal(new_bookmark.url, 'http://example.com');
       });
-
-      it('should validate that `name` is not empty & return false otherwise', function(){
-        const new_bookmark = bookmarker.create('', 'http://example.com');
-        assert.equal(new_bookmark, false);
-      });
-
-      it('should validate that `url` is a valid link & return false otherwise', function(){
-        const new_bookmark = bookmarker.create('test', 'not_a_url', ['example', 'tag_2']);
-        assert.equal(new_bookmark, false);
-      });
     });
   });
 
-  describe('#indexById()', function() {
-    it('should return the index of an item given its `id` as an argument', function(){
-      const bookmark = bookmarker.create('Google', 'http://google.com');
-      const index = bookmarker.indexById(bookmark.id);
-      assert.equal(index, bookmarker.count() - 1);
-    });
-
-    it('should return -1 if the bookmark index is not found', function(){
-      const index = bookmarker.indexById('not_a_real_id');
-      assert.equal(index, -1);
-    });
-  });
-
-  describe('#findById()', function() {
+  describe('#find()', function() {
     it('should return the bookmark of the object given its `id`', function(){
       const bookmark = bookmarker.create('Google', 'http://google.com');
-      const found = bookmarker.findById(bookmark.id);
+      const found = bookmarker.find(bookmark.id);
       assert.equal('Google', found.name);
     });
 
     it('should return null if the bookmark is not found', function(){
-      const found = bookmarker.findById('not_a_real_id');
+      const found = bookmarker.find('not_a_real_id');
       assert.equal(null, found);
     });
   });
 
-  describe('#deleteById()', function() {
+  describe('#remove()', function() {
     it('should delete a bookmark from the DB given its `id` as an argument', function(){
       const bookmark = bookmarker.create('Amazon', 'http://amazon.ca');
-      bookmarker.deleteById(bookmark.id);
+      bookmarker.remove(bookmark.id);
       // wait for DB to be updated
       setTimeout(function(){
         // then check that item can no longer be found
-        assert.equal(-1, bookmarker.indexById(bookmark.id));
+        assert.equal(null, bookmarker.find(bookmark.id));
       }, 0);
     });
   });
 
-  describe('#deleteAll()', function() {
+  describe('#removeAll()', function() {
     it('Should remove all bookmarks within the DB', function(){
-      bookmarker.deleteAll();
+      bookmarker.removeAll();
       // wait for DB to be updated
       setTimeout(function(){
         // then check that item can no longer be found
@@ -95,7 +72,7 @@ describe('Bookmarker', function() {
 
   // HOOKS
   after('Remove all test bookmarks from the DB', function() {
-    bookmarker.deleteAll();
+    bookmarker.removeAll();
   });
 
 });
