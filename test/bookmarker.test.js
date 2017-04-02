@@ -1,5 +1,11 @@
 const assert = require('chai').assert;
+const lowdb = require('lowdb');
 const bookmarker = require('../db');
+
+const db = lowdb(`${__dirname}/../db/database.json`);
+
+// reset the bookmarks list to an array
+db.set('bookmarks', []).value();
 
 describe('Bookmarker', function() {
 
@@ -7,13 +13,6 @@ describe('Bookmarker', function() {
     it('should return an array of bookmarks in the DB', function() {
       const data = bookmarker.all();
       assert.equal(true, data.hasOwnProperty('length'));
-    });
-  });
-
-  describe('#removeAll()', function() {
-    it('should remove all the bookmarks available in the DB', function(){
-      bookmarker.removeAll();
-      assert.equal(0, bookmarker.all().length);
     });
   });
 
@@ -25,10 +24,10 @@ describe('Bookmarker', function() {
   });
 
   describe('#create()', function() {
-    describe('can recieve a `name` and a `url` as arguments', function(){
+    describe('can recieve a `title` and a `url` as arguments', function(){
       it('should return the newly created bookmark', function(){
         const new_bookmark = bookmarker.create('testing', 'http://example.com');
-        assert.equal(new_bookmark.name, 'testing');
+        assert.equal(new_bookmark.title, 'testing');
         assert.equal(new_bookmark.url, 'http://example.com');
       });
     });
@@ -37,19 +36,29 @@ describe('Bookmarker', function() {
   describe('#find()', function() {
     it('should return the bookmark of the object given its `id`', function(){
       const bookmark = bookmarker.create('Google', 'http://google.com');
+
+      if (!bookmark) {
+        throw new Error("Failed to create a bookmark before finding it");
+      }
+
       const found = bookmarker.find(bookmark.id);
-      assert.equal('Google', found.name);
+      assert.equal('Google', found.title);
     });
 
     it('should return null if the bookmark is not found', function(){
       const found = bookmarker.find('not_a_real_id');
-      assert.equal(null, found);
+      assert.equal(-1, found);
     });
   });
 
   describe('#remove()', function() {
     it('should delete a bookmark from the DB given its `id` as an argument', function(){
       const bookmark = bookmarker.create('Amazon', 'http://amazon.ca');
+
+      if (!bookmark) {
+        throw new Error("Failed to create a bookmark before removing it");
+      }
+
       bookmarker.remove(bookmark.id);
       // wait for DB to be updated
       setTimeout(function(){
@@ -61,6 +70,12 @@ describe('Bookmarker', function() {
 
   describe('#removeAll()', function() {
     it('Should remove all bookmarks within the DB', function(){
+      const bookmark = bookmarker.create('Another One', 'http://example.com');
+
+      if (!bookmark) {
+        throw new Error("Failed to create a bookmark before removing all");
+      }
+
       bookmarker.removeAll();
       // wait for DB to be updated
       setTimeout(function(){
