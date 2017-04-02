@@ -18,9 +18,9 @@ const bookmarker = {
   },
   count: function(){
     return this.all().length;
-  }
+  },
   // creates a new bookmark and returns it
-  create: function(name, url){
+  create: function(title, url){
 
   },
   // returns a bookmark object given its ID, null otherwise
@@ -33,7 +33,7 @@ const bookmarker = {
   },
   // remove all bookmarks from the database
   removeAll: function(){
-
+    
   }
 };
 
